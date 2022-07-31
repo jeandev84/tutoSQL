@@ -2256,5 +2256,4 @@ CALL getClosestCity(@city);
 SELECT @city;
 
 
-
 ```
