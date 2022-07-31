@@ -2257,3 +2257,26 @@ SELECT @city;
 
 
 ```
+
+### Sauvegarde de la base de donnees
+
+Depuis un terminal
+
+```sql
+-- Exporter la base de donnees
+
+> mysqldump -u root -p tuto
+password: (Enter)
+
+> mysqldump -u root -p tuto > dump.sql
+
+
+-- Importer la base de donnees
+
+> mysql -u root -p tuto < dump.sql
+password: ***
+
+```
+
+
+
