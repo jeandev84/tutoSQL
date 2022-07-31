@@ -2276,6 +2276,11 @@ password: (Enter)
 > mysql -u root -p tuto < dump.sql
 password: ***
 
+
+-- Conseiller de faire un dump mysql de la sorte
+
+> mysqldump -u root -p tuto --result-file=dump.sql
+
 ```
 
 
