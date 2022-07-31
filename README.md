@@ -444,5 +444,160 @@ CREATE TABLE recipes (
 
 ```sql
 
+-- NOTION DE VALEUR NULL
+-- NULL : extime l' absence de presence de valeur
+-- Un champ deja existant sans valeur est par defaut NULL
+
+-- Par example inseront des donnees sans le champs 'slug'
+
+-- On va supprimer d'abord la table 'recipes' ( DROP TABLE recipes; )
+
+
+/*
+INSERT INTO recipes
+(
+    title, 
+    content, 
+    duration, 
+    online, 
+    created_at
+) VALUES (
+    'Soupe1', 
+    'Contenu de test',
+    10,
+    FALSE,
+    1659167706
+),
+(
+    'Soupe2', 
+    'Contenu de test',
+    10,
+    FALSE,
+    1659167706
+);
+*/
+
+-- DROP TABLE recipes;
+-- CREATE UNIQUE INDEX idx_recipes_slug ON recipes (slug);
+-- UPDATE recipes SET slug = 'soupe2' WHERE id = 4;
+-- EXPLAIN QUERY PLAN SELECT * FROM recipes WHERE slug = 'soupe';
+-- PRAGMA index_list('recipes');
+-- DROP INDEX idx_recipes_slug
+-- CREATE TABLE recipes;
+
+
+-- NOT NULL est une contrainte qui permet de ne pas avoir une valeur NULL
+
+-- DROP TABLE recipes;
+/*
+CREATE TABLE recipes (
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+   title VARCHAR(150) NOT NULL,
+   slug VARCHAR(50) NOT NULL UNIQUE,
+   content TEXT,
+   duration SMALLINT,
+   online BOOLEAN,
+   created_at DATETIME
+);
+*/
+
+/*
+INSERT INTO recipes
+(
+    title, 
+    slug, 
+    duration, 
+    online, 
+    created_at
+) VALUES (
+    'Soupe2', 
+    'soupe-2',
+    10,
+    FALSE,
+    1659167706
+);
+*/
+
+/*
+INSERT INTO recipes
+(
+    title, 
+    slug, 
+    content,
+    duration, 
+    online, 
+    created_at
+) VALUES (
+    'Soupe3', 
+    'soupe-3',
+    'contenu de test',
+    10,
+    FALSE,
+    1659167706
+);
+*/
+
+
+-- Recuperer toutes les recettes dont le contenu est null
+-- SELECT * FROM recipes WHERE content IS NULL;
+
+-- Recupere toutes les recettes dont le contenu est non null
+-- SELECT * FROM recipes WHERE content IS NOT NULL;
+
+
+-- Mettre un contenu a NULL ( Mise ajour )
+-- UPDATE recipes SET content = NULL WHERE id = 1;
+
+/*
+INSERT INTO recipes
+(
+    title, 
+    slug, 
+    content,
+    duration, 
+    online, 
+    created_at
+) VALUES (
+    'Soupe3', 
+    'soupe-3',
+    NULL,
+    10,
+    FALSE,
+    1659167706
+);
+*/
+
+-- Ajouter une valeur par defaut a une colonne (DEFAULT)
+-- Par example ajouter une valeur par defaut pour notre champ (duration)
+
+-- DROP TABLE recipes;
+/*
+CREATE TABLE recipes (
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+   title VARCHAR(150) NOT NULL,
+   slug VARCHAR(50) NOT NULL UNIQUE,
+   content TEXT DEFAULT 'hello' NOT NULL,
+   duration SMALLINT DEFAULT 10 NOT NULL,
+   online BOOLEAN,
+   created_at DATETIME
+);
+*/
+
+/*
+INSERT INTO recipes
+(
+    title, 
+    slug,  
+    online, 
+    created_at
+) VALUES (
+    'Soupe3', 
+    'soupe-3',
+    FALSE,
+    1659167706
+);
+
+UPDATE recipes SET title = 'Soupe1', slug = 'soupe-1' WHERE id = 1;
+*/
 
 ```
