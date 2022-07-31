@@ -1991,4 +1991,51 @@ INSERT INTO posts (title, content) VALUES
 ('Raton double', 'Le raton qui avait comme ami un autre raton laveur'),
 ;
 
+
+SELECT * FROM posts;
+SELECT * FROM posts WHERE content LIKE '%Raton%';
+
+-- Requette optimisee
+SELECT * FROM posts WHERE MATCH(content) AGAINST('raton' IN NATURAL LANGUAGE MODE);
+
+SELECT * FROM posts WHERE MATCH(content) AGAINST('raton laveur' IN NATURAL LANGUAGE MODE);
+
+SELECT * FROM posts WHERE MATCH(content) AGAINST('\"raton laveur\"' IN NATURAL LANGUAGE MODE);
+
+SELECT * FROM posts WHERE MATCH(content) AGAINST('+raton +laveur' IN BOOLEAN MODE);
+
+SELECT * FROM posts WHERE MATCH(content) AGAINST('+raton -laveur' IN BOOLEAN MODE);
+
+SELECT * FROM posts WHERE MATCH(content) AGAINST('+raton laveur' IN BOOLEAN MODE);
+
+/*
+SELECT *, MATCH(content) AGAINST('+raton laveur' IN BOOLEAN MODE) AS score
+FROM posts
+HAVING scor > 0
+ORDER BY score DESC;
+*/
+
+
+SELECT *, MATCH(content) AGAINST('+raton laveur' IN NATURAL LANGUAGE MODE) AS score
+FROM posts
+MATCH(content) AGAINST('+raton laveur' IN NATURAL LANGUAGE MODE);
+
+
+
+SELECT *, MATCH(content) AGAINST('+raton laveur' IN NATURAL LANGUAGE MODE) AS score
+FROM posts
+MATCH(content) AGAINST('+raton laveur' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION);
+
+
+
+SELECT * FROM INFORMATION_SCHEMA.INNODB_FT_DEFAULT_STOPWORD;
+
+```
+
+
+### Gestion des Permissions
+
+```sql
+
+
 ```
