@@ -1638,3 +1638,57 @@ COMMIT TRANSACTION;
 SELECT * FROM recipes;
 
 ```
+
+
+### NOTION DE VIEW : CREATE VIEW ...
+
+```sql
+-- NOTIONS DE VUES: CREATE VIEW
+
+-- Selectionner la liste des recettes
+/*
+SELECT * 
+FROM recipes r
+LEFT JOIN ingredients_recipes ir ON ir.recipe_id = r.id
+LEFT JOIN ingredients i ON ir.ingredient_id = i.id
+;
+
+
+SELECT r.title, GROUP_CONCAT(i.name, ', ') as ingredients
+FROM recipes r
+LEFT JOIN ingredients_recipes ir ON ir.recipe_id = r.id
+LEFT JOIN ingredients i ON ir.ingredient_id = i.id
+GROUP BY r.title;
+*/
+
+
+--- Creer une vue (CREATE VIEW nameOfView as sqlQuery)
+CREATE VIEW recipe_with_ingredients
+AS 
+  SELECT r.title, GROUP_CONCAT(i.name, ', ') as ingredients
+  FROM recipes r
+  LEFT JOIN ingredients_recipes ir ON ir.recipe_id = r.id
+  LEFT JOIN ingredients i ON ir.ingredient_id = i.id
+  GROUP BY r.title;
+
+
+/*
+SELECT * 
+FROM recipe_with_ingredients;
+*/
+
+SELECT *
+FROM recipe_with_ingredients 
+WHERE ingredients LIKE '%Farine%';
+
+
+
+EXPLAIN QUERY PLAN SELECT *
+FROM recipe_with_ingredients 
+WHERE ingredients LIKE '%Farine%';
+
+
+-- Supprimer une vue (DROP VIEW nameOfView)
+DROP VIEW recipe_with_ingredients;
+
+```
