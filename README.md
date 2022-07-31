@@ -1215,5 +1215,177 @@ min(X)
 sum(X)
 total(X)
 
+-- Selectionner toutes les recettes
+SELECT * FROM recipes;
+
+
+  -- Determiner le nombre total de recette existant dans mon application
+  -- COUNT(X) : retourne toutes les recettes non null. 
+  SELECT COUNT(id) FROM recipes;
+
+
+  -- COUNT(*) : retorune toutes les recettes null et non null y compris (toutes les colonnes)
+  SELECT COUNT(*) FROM recipes;
+
+
+  -- Calculer la somme
+  -- SUM(X)
+  -- SELECT SUM(duration) as sum_duration FROM recipes;
+
+
+  -- GROUP_CONCAT(X)
+  -- title1,title2
+  -- SELECT GROUP_CONCAT(title) AS titles FROM recipes; 
+
+
+  -- title1, title2
+  -- SELECT GROUP_CONCAT(title, ', ') AS titles FROM recipes; 
+
+
+  -- title1-title2
+  -- SELECT GROUP_CONCAT(title, '-') AS titles FROM recipes; 
+
+
+  -- title1_title2
+  -- SELECT GROUP_CONCAT(title, '_') AS titles FROM recipes;
+
+
+  -- SELECT GROUP_CONCAT(title, ', ') FROM recipes;
+
+  SELECT * FROM recipes;
+
+  -- GROUP BY column (Je veux grouper par duration)
+  -- Grouper 2 enregistrements qui ont une duree de 10 et 1 enregistrement qui ont une duree de 30
+  -- SELECT COUNT(id), duration FROM recipes GROUP BY duration;
+
+
+  -- Dans le cas suivant
+  -- Vue que title n'y est pas dans group by cela peut generer une erreure
+  -- Cela peut causer une erreure dans certaines base de donnees
+  -- SELECT title, COUNT(id), duration FROM recipes GROUP BY duration;
+
+
+  -- ANY_VALUE(X)
+  -- SELECT ANY_VALUE(title), COUNT(id), duration FROM recipes GROUP BY duration;
+
+
+
+  -- Recuper les recettes qui ont un COUNT(X) >= 2
+  /*
+  Ceci va gener une erreur de COUNT() a cause de la condition 
+  WHERE qui n' est pas pris en compte par GROUP BY
+  Pour remedier a cela on ajoute a la suite de la requette HAVING
+
+
+  SELECT COUNT(id) AS count, duration 
+  FROM recipes 
+  WHERE count >= 2
+  GROUP BY duration;
+  */
+
+  -- HAVING (marche comme WHERE)
+  /*
+  SELECT COUNT(id) AS count, duration 
+  FROM recipes
+  GROUP BY duration
+  HAVING count >= 2;
+ 
+  SELECT * 
+  FROM ingredients i
+  JOIN ingredients_recipes ir ON ir.ingredient_id = i.id;
+
+  SELECT * 
+  FROM ingredients i
+  LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id;
+
+  -- Resultat insatisfaisant
+  SELECT i.name, COUNT(id) AS count
+  FROM ingredients i
+  LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+  GROUP BY i.name;
+
+
+
+  SELECT *
+  FROM ingredients i
+  LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id;
+
+
+  -- GROUP : est interessant quant on a une fonction d' aggregation comt COUNT(), SUM() etc
+  -- Resultat satifaisant
+  SELECT i.name, COUNT(ir.recipe_id) AS count
+  FROM ingredients i
+  LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+  GROUP BY i.name;
+
+
+  SELECT i.name, COUNT(ir.recipe_id) AS count, r.duration
+  FROM ingredients i
+  LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+  LEFT JOIN recipes r ON ir.recipe_id = r.id
+  GROUP BY i.name, r.duration;
+
+  -- DISTINCT
+  /*
+  SELECT i.name, COUNT(ir.recipe_id) AS count, r.duration
+  FROM ingredients i
+  LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+  LEFT JOIN recipes r ON ir.recipe_id = r.id
+  GROUP BY i.name, r.duration;
+  */
+
+
+  /* 
+  Trouver tous le ingredients qui ont au moins une recette
+  Retourne tous les ingredients qui sont utilises au moins une fois
+
+  Ceci nous donnera une duplication de recettes
+
+  SELECT *
+  FROM ingredients i
+  LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+  WHERE ir.recipe_id IS NOT NULL;
+  -- LEFT JOIN recipes r ON ir.recipe_id = r.id
+
+  */
+
+  -- SELECT DISTINCT : permet d' eviter les duplications de lignes
+  /*
+  SELECT DISTINCT i.name
+  FROM ingredients i
+  LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+  WHERE ir.recipe_id IS NOT NULL;
+  */
+
+  -- Retourne des duplications de recettes
+  /*
+  SELECT DISTINCT i.name, r.duration
+  FROM ingredients i
+  LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+  LEFT JOIN recipes r ON ir.recipe_id = r.id
+  WHERE ir.recipe_id IS NOT NULL;
+  */
+
+  /*
+  DISTINCT est utiliser s'il on n'a pas d'agregation a faire
+  */
+  SELECT DISTINCT i.name
+  FROM ingredients i
+  LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+  LEFT JOIN recipes r ON ir.recipe_id = r.id
+  WHERE ir.recipe_id IS NOT NULL;
+
+
+ NB : 
+ GROUP BY est utilise au cas 
+ ou dans la requette SELECT 
+ il ya une aggregation qui est utilisee comme COUNT(X), AVG(X), SUM(X)
+```
+
+
+### ORDER & LIMIT
+
+```sql
+
 
 ```
