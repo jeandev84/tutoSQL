@@ -170,7 +170,7 @@ JOIN ingredients i ON ir.ingredient_id = i.id;
 SELECT * FROM recipes WHERE id = 2;
 
 
-SELECT * 
+SELECT ir.quantity, ir.unit, i.name
 FROM ingredients_recipes ir 
-JOIN ingredients ON ir.ingredient_id = i.id
+JOIN ingredients i ON ir.ingredient_id = i.id
 WHERE ir.recipe_id = 2;
