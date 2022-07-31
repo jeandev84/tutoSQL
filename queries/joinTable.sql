@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS recipes (
 INSERT INTO recipes (title, slug, category_id) 
 VALUES ('Creme anglaise', 'creme-anglaise', 2), 
        ('Soupe', 'soupe', 1),
-       ('Salade de fruit', 'salade-de-fruit', 2)
+       ('Salade de fruit', 'salade-de-fruit', NULL)
 ;
 
 
@@ -59,8 +59,79 @@ Lors de SELECT, il est important de preciser les champs dont on a besoin
 
 */
 
+-- Selection de tous les champs de recettes
 -- SELECT * FROM recipes;
+
+/*
+ lorsq'on seulement un JOIN
+ lors d'un SELECT 
+ il recupera toutes les recettes qu'on peut joindre a la table categories
+ s'il ne les trouve pas il va tout simplement les supprimer
+ Cas d' insertion ou category_id = NULL
+ 
+INSERT INTO recipes (title, slug, category_id) 
+VALUES ('Creme anglaise', 'creme-anglaise', 2), 
+       ('Soupe', 'soupe', 1),
+       ('Salade de fruit', 'salade-de-fruit', NULL)
+;
+
+En un mot SELECT va recupere toutes les recettes 
+qui ont une liaison possible avec ta table categories
+
+Ou il aura category_id = NULL seront ignores
+*/
 
 SELECT r.id, r.title, c.title AS category
 FROM recipes r
 JOIN categories c ON r.category_id = c.id;
+
+-- JOIN equivalent a INNER JOIN (les deux fonctionnent de la meme facon)
+/*
+ Selectionne les elements qui correspondent aux 2 criteres
+*/
+SELECT r.id, r.title, c.title AS category
+FROM recipes r
+INNER JOIN categories c ON r.category_id = c.id;
+
+
+
+-- LIAISON (LEFT JOIN)
+/* 
+  Recupere tous les enregistrements meme si la cle primaire a une valeur NULL
+  Recupere tous les elements qui ont la liaison 
+  et ceux qui n' ont pas de liaison aussi
+
+  LEFT JOIN est par defaut un LEFT OUTER JOIN
+*/
+
+SELECT r.id, r.title, c.title AS category
+FROM recipes r 
+LEFT JOIN categories c ON r.category_id = c.id; 
+
+
+-- LIAISON (RIGHT JOIN)
+/* 
+Selection les elements de la table de jointure pour rejoindre la table selectionner
+  
+RIGHT JOIN est par defaut un RIGHT OUTER JOIN
+
+Moins utiliser RIGHT JOIN
+il fait le sens inverse de LEFT JOIN
+*/
+
+SELECT r.id, r.title, c.title AS category
+FROM recipes r 
+RIGHT JOIN categories c ON r.category_id = c.id; 
+
+
+-- LIAISON (FULL JOIN)
+/*
+Renvoit les 2 colonnes avec les trucs croises avec des NULL partout
+
+FULL OUTER JOIN
+assez rarement supporte
+*/
+
+SELECT r.id, r.title, c.title AS category
+FROM recipes r 
+FULL JOIN categories c ON r.category_id = c.id; 
