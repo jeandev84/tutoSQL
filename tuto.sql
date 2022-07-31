@@ -141,11 +141,25 @@ FROM ingredients i
 JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
 JOIN recipes r ON ir.recipe_id = r.id
 WHERE i.name = 'Oeuf';
+
+
+SELECT * 
+FROM recipes r
+LEFT JOIN ingredients_recipes ir ON ir.recipe_id = r.id
+WHERE ir.recipe_id IS NULL;
+
+
+DELETE FROM ingredients WHERE id = 3;
+SELECT * FROM ingredients_recipes;
 */
 
 
+UPDATE ingredients_recipes 
+SET quantity = 10
+WHERE recipe_id = 2 AND ingredient_id = 3;
 
 
-
-
-
+SELECT r.title, ir.quantity, ir.unit, i.name AS ingredient
+FROM recipes r
+JOIN ingredients_recipes ir ON ir.recipe_id = r.id
+JOIN ingredients i ON ir.ingredient_id = i.id;
