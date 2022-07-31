@@ -2033,9 +2033,228 @@ SELECT * FROM INFORMATION_SCHEMA.INNODB_FT_DEFAULT_STOPWORD;
 ```
 
 
-### Gestion des Permissions
+### Gestion des permissions et privileges des utilisateurs (CREATE USER)
+
+Donner access a de nouveaux utilisateurs
+```sql
+
+-- CREATE USER 'nomUtilisateur'@'%' IDENTIFIED BY 'motDePass';
+-- % : n' importe quel interface
+-- 'readonly'@'%' : On donne acces a l' utilisateur 'readonly' depuis n' importe quel interface. 
+
+CREATE USER 'readonly'@'%' IDENTIFIED BY '0000';
+
+
+-- Donner une permission a un utilisateur specific
+-- Dans notre cas on va donner la permission a l' utilisateur de faire un SELECT
+
+GRANT SELECT ON tuto.posts TO 'readonly'@'%'
+
+
+-- Lister l' ensemble d' utilisateurs qu' on a dans notre BD
+-- Si on est connecte en tant qu' administrateur
+SELECT * FROM mysql.user;
+
+
+-- Creer une table d' utilisateur
+CREATE TABLE users (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255)
+)
+
+-- Lister l' ensemble des permissions donner a l' utilisateur 'readonly'
+SHOW GRANTS FOR 'reaonly'@'%';
+
+
+-- Supprimer une permission specific
+REVOKE SELECT `tuto`.`posts` FROM `readonly`@`%`;
+
+
+-- On reaffiche l' ensemble des permissions donner a l' utilisateur 'readonly'
+SHOW GRANTS FOR 'reaonly'@'%';
+
+
+-- Supprimer un utilisateur
+DROP USER 'readonly'@'%';
+
+
+```
+
+
+### Les procedures stockees (CREATE PROCEDURE)
+
+Ils permettent de creer des fonctions qu' on pourra memoriser dans notre base de donnees
+et ensuite on pourra l' utiliser soit pour modifier ou recuperer des informations
+semblable aux VUES (CREATE VIEW)
 
 ```sql
+
+SELECT title,
+       ST_Distance_Sphere(
+          location,
+          (SELECT location FROM posts WHERE title = 'Montpellier')
+       ) as distance
+       FROM posts
+       HAVING distance IS NOT NULL;
+
+
+-- Create procedure
+/*
+DELIMITER $
+
+CREATE PROCEDURE getDistances ()
+BEGIN
+   SELECT * FROM posts
+END$
+
+DELIMITER ;
+*/
+
+
+DELIMITER $
+
+CREATE OR REPLACE PROCEDURE getDistances ()
+BEGIN
+   SELECT title,
+       ST_Distance_Sphere(
+          location,
+          (SELECT location FROM posts WHERE title = 'Montpellier')
+       ) as distance
+       FROM posts
+       HAVING distance IS NOT NULL;
+
+END$
+
+DELIMITER ;
+
+
+-- Lister l' ensemble de procedures qui sont stocker dans mon systeme
+SHOW PROCEDURE STATUS;
+
+SHOW PROCEDURE STATUS LIKE 'getDistances';
+
+
+-- Utiliser notre procedure
+CALL getDistance();
+
+
+
+-- Creer une procedure parametree
+
+DELIMITER $
+
+CREATE OR REPLACE PROCEDURE getDistances (
+    IN origin VARCHAR(255)
+)
+BEGIN
+   SELECT title,
+       ST_Distance_Sphere(
+          location,
+          (SELECT location FROM posts WHERE title = origin)
+       ) as distance
+       FROM posts
+       HAVING distance IS NOT NULL;
+
+END$
+
+DELIMITER ;
+
+
+CALL getDistances('Perpignan');
+CALL getDistances('Paris');
+
+
+
+-- Creer une procedure pour trouver la ville la plus proche
+
+/*
+DELIMITER $
+
+CREATE OR REPLACE PROCEDURE getClosesCity (
+    IN origin VARCHAR(255)
+    OUT closestCity VARCHAR(255)
+)
+BEGIN
+   SELECT title,
+       ST_Distance_Sphere(
+          location,
+          (SELECT location FROM posts WHERE title = origin)
+       ) as distance
+       FROM posts
+       WHERE title != origin
+       HAVING distance IS NOT NULL
+       ORDER BY distance ASC
+       LIMIT 1;
+
+END$
+
+DELIMITER ;
+
+
+CALL getClosesCity('Perpignan');
+CALL getClosesCity('Paris');
+*/
+
+
+DELIMITER $
+
+CREATE OR REPLACE PROCEDURE getClosestCity (
+    IN origin VARCHAR(255)
+    OUT closestCity VARCHAR(255)
+)
+BEGIN
+   SELECT subquery.title INTO closestCity FROM (
+      SELECT title,
+       ST_Distance_Sphere(
+          location,
+          (SELECT location FROM posts WHERE title = origin)
+       ) as distance
+       FROM posts
+       WHERE title != origin
+       HAVING distance IS NOT NULL
+       ORDER BY distance ASC
+       LIMIT 1;
+   ) as subquery;
+END$
+
+DELIMITER ;
+
+
+CALL getClosestCity('Montpellier', @city);
+
+
+SELECT @city;
+
+
+-- Cas INOUT
+
+DELIMITER $
+
+CREATE OR REPLACE PROCEDURE getClosestCity (
+    INOUT origin VARCHAR(255)
+)
+BEGIN
+   SELECT subquery.title INTO origin FROM (
+      SELECT title,
+       ST_Distance_Sphere(
+          location,
+          (SELECT location FROM posts WHERE title = origin)
+       ) as distance
+       FROM posts
+       WHERE title != origin
+       HAVING distance IS NOT NULL
+       ORDER BY distance ASC
+       LIMIT 1;
+   ) as subquery;
+END$
+
+DELIMITER ;
+
+
+SET @city = "Montpellier";
+CALL getClosestCity(@city);
+SELECT @city;
+
 
 
 ```
