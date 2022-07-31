@@ -601,3 +601,11 @@ UPDATE recipes SET title = 'Soupe1', slug = 'soupe-1' WHERE id = 1;
 */
 
 ```
+
+
+### NOTION DE CLE ETRANGERES ENTRE NOS TABLES
+
+```sql
+
+
+```
