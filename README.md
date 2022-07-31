@@ -1924,6 +1924,71 @@ SELECT title FROM posts WHERE ST_Distance_Sphere(
 
 ```sql
 
+CREATE TABLE posts (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    content LONGTEXT,
+    online VARCHAR(255) DEFAUT 0,
+    author JSON
+);
+
+
+-- Insertion d' articles
+INSERT INTO posts (title, author) VALUES
+('Titre de test', '{"age": 20, "firstname": "John"}');
+
+INSERT INTO posts (title, author) VALUES
+('Titre de jane', '{"age": 30, "firstname": "Jane"}');
+
+
+
+INSERT INTO posts (title) VALUES
+('Titre de sans author');
+
+
+INSERT INTO posts (title, author) VALUES
+('Titre de sans author', '{"age": 25, "firstname": "John\\" Doe"}');
+
+
+SELECT title, author->"$.age" FROM posts;
+SELECT * FROM posts WHERE author->"$.age" > 20;
+SELECT * FROM posts WHERE author->"$.age" <= 20;
+SELECT author->"$.age" FROM posts;
+SELECT id, author->"$.age" FROM posts;
+
+
+UPDATE posts SET author = JSON_SET(author, '$.age', 25);
+UPDATE posts SET author = JSON_SET(author, '$.age', author->'$.age' + 2) WHERE id = 1;
+
+
+SELECT author->"$.firstname" FROM posts;
+SELECT author->>"$.firstname" FROM posts;
 
 ```
 
+### Recherche FullText 
+
+- Creer un INDEX de type FULLTEXT
+
+```sql
+
+-- FULLTEXT marche sur les moteurs de stcokages de donnees: InnoDB et MyISAM
+CREATE TABLE posts (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    content LONGTEXT,
+    online VARCHAR(255) DEFAUT 0,
+    FULLTEXT (content)
+);
+
+
+
+INSERT INTO posts (title, content) VALUES
+('Lorem', 'Laudantium laudantium doloribus aperiam. Molestias est iste commodi numquam molestias veritatis dolor'),
+('Rator Laveur', 'Le raton laveur est une espece de mammifere'),
+('Raton rat', 'Le raton le bebe du rat'),
+('Raton space', 'Le raton qui avait comme emploi laveur de carreau'),
+('Raton double', 'Le raton qui avait comme ami un autre raton laveur'),
+;
+
+```
