@@ -1568,3 +1568,73 @@ WHERE ir.recipe_id IN (
 );
 
 ```
+
+
+### LES TRANSACTIONS
+
+Les transactions permettent de grouper certaines requete ensemble
+et de revenir en arriere en cas de probleme
+
+```sql
+
+--- TRANSACTIONS
+
+/*
+BEGIN TRANSACTION;
+
+SELECT * FROM recipes;
+
+DELETE FROM recipes WHERE id = 1;
+
+SELECT * FROM recipes;
+
+ROLLBACK TRANSACTION;
+
+SELECT * FROM recipes;
+*/
+
+
+BEGIN TRANSACTION;
+
+SELECT * FROM recipes;
+
+DELETE FROM recipes WHERE id = 1;
+
+SELECT * FROM recipes;
+
+COMMIT TRANSACTION;
+
+SELECT * FROM recipes;
+
+
+
+--- TRANSACTIONS
+
+/*
+BEGIN TRANSACTION;
+
+SELECT * FROM recipes;
+
+DELETE FROM recipes WHERE id = 1;
+
+SELECT * FROM recipes;
+
+ROLLBACK TRANSACTION;
+
+SELECT * FROM recipes;
+*/
+
+
+BEGIN TRANSACTION;
+
+SELECT * FROM recipes;
+
+DELETE FROM recipes WHERE id = 1;
+
+SELECT * FROM recipes;
+
+COMMIT TRANSACTION;
+
+SELECT * FROM recipes;
+
+```

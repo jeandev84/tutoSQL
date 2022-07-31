@@ -170,30 +170,30 @@ JOIN ingredients i ON ir.ingredient_id = i.id;
 
 
 
-SELECT * FROM recipes WHERE id = 2;
+-- SELECT * FROM recipes WHERE id = 2;
 
 
-SELECT ir.quantity, ir.unit, i.name
-FROM ingredients_recipes ir 
-JOIN ingredients i ON ir.ingredient_id = i.id
-WHERE ir.recipe_id = 2;
+-- SELECT ir.quantity, ir.unit, i.name
+-- FROM ingredients_recipes ir 
+-- JOIN ingredients i ON ir.ingredient_id = i.id
+-- WHERE ir.recipe_id = 2;
 
 
 -- Modifier la date d' une recette
-UPDATE recipes SET date = 100 WHERE id =2;
+-- UPDATE recipes SET date = 100 WHERE id =2;
 
 
 -- Selectionner toutes les recettes
-SELECT * FROM recipes;
+-- SELECT * FROM recipes;
 
 
   -- Determiner le nombre total de recette existant dans mon application
   -- COUNT(X) : retourne toutes les recettes non null. 
-  SELECT COUNT(id) FROM recipes;
+  -- SELECT COUNT(id) FROM recipes;
 
 
   -- COUNT(*) : retorune toutes les recettes null et non null y compris (toutes les colonnes)
-  SELECT COUNT(*) FROM recipes;
+  -- SELECT COUNT(*) FROM recipes;
 
 
   -- Calculer la somme
@@ -220,7 +220,7 @@ SELECT * FROM recipes;
 
   -- SELECT GROUP_CONCAT(title, ', ') FROM recipes;
 
-  SELECT * FROM recipes;
+  /* SELECT * FROM recipes; */
 
   -- GROUP BY column (Je veux grouper par duration)
   -- Grouper 2 enregistrements qui ont une duree de 10 et 1 enregistrement qui ont une duree de 30
@@ -344,11 +344,13 @@ SELECT * FROM recipes;
   /*
   DISTINCT est utiliser s'il on n'a pas d'agregation a faire
   */
+  /*
   SELECT DISTINCT i.name
   FROM ingredients i
   LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
   LEFT JOIN recipes r ON ir.recipe_id = r.id
   WHERE ir.recipe_id IS NOT NULL;
+  */
 
 
 -- ORDER & LIMIT
@@ -387,6 +389,7 @@ ORDER BY count DESC, i.name ASC;
 */
 
 -- LIMIT a un nombre definit
+/*
 SELECT i.name, COUNT(ir.recipe_id) AS count
 FROM ingredients i
 LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
@@ -394,7 +397,7 @@ LEFT JOIN recipes r ON ir.recipe_id = r.id
 GROUP BY i.name
 ORDER BY count DESC, i.name ASC
 LIMIT 3;
-
+*/
 
 -- LIMIT  : a nombre definit mais commencer par OFFSET
 -- OFFSET : signifitcommencant par (ca permet de bouger le curseur
@@ -468,6 +471,8 @@ FROM recipes
 WHERE id IN (1, 2, 3);
 */
 
+
+/*
 SELECT *
 FROM recipes
 WHERE id IN (
@@ -522,3 +527,36 @@ WHERE ir.recipe_id IN (
     LEFT JOIN categories_recipes cr ON c.id = cr.category_id
     WHERE cr.recipe_id = ir.recipe_id
 );
+
+*/
+
+
+--- TRANSACTIONS
+
+/*
+BEGIN TRANSACTION;
+
+SELECT * FROM recipes;
+
+DELETE FROM recipes WHERE id = 1;
+
+SELECT * FROM recipes;
+
+ROLLBACK TRANSACTION;
+
+SELECT * FROM recipes;
+*/
+
+
+BEGIN TRANSACTION;
+
+SELECT * FROM recipes;
+
+DELETE FROM recipes WHERE id = 1;
+
+SELECT * FROM recipes;
+
+COMMIT TRANSACTION;
+
+SELECT * FROM recipes;
+
