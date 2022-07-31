@@ -1694,13 +1694,71 @@ DROP VIEW recipe_with_ingredients;
 ```
 
 
-### Les Triggers
+### Les Triggers (CREATE TRIGGER)
 
 ```sql
 Les triggers permettent de rajouter de la logique
-lorsqu ``'``` on a des operations qui sont effectuees sur ma base de donnees de voir combien de fois les ingredients sont utilises.
+lorsquon a des operations qui sont effectuees sur ma base de donnees de voir combien de fois les ingredients sont utilises.
 
 Par example quand on fait CRUD (ajout, mise a jour, lire, supprimer)
+ALTER TABLE ingredients 
+ADD COLUMN usage_count INTEGER DEFAULT 0;
+
+
+SELECT * FROM ingredients;
+
+-- Ce trigger sera appele 
+-- apres insertion de donnees dans la table "ingredients_recipes"
+-- dans le cas ou NEW.email != OLD.email
+/*
+CREATE TRIGGER update_usage_count_on_ingredients_linked
+AFTER INSERT ON ingredients_recipes
+WHERE NEW.email != OLD.email
+*/
+
+CREATE TRIGGER update_usage_count_on_ingredients_linked
+AFTER INSERT ON ingredients_recipes
+BEGIN 
+   UPDATE ingredients
+   SET usage_count = usage_count + 1
+   WHERE id = NEW.ingredient_id;
+END;
+
+
+-- DROP Trigger
+-- DROP TRIGGER decrement_usage_count_on_ingredients_unlinked
+
+
+CREATE TRIGGER decrement_usage_count_on_ingredients_unlinked
+AFTER INSERT ON ingredients_recipes
+BEGIN
+   UPDATE ingredients
+   SET usage_count = usage_count - 1
+   WHERE id = OLD.ingredient_id;
+END;
+
+
+
+CREATE TRIGGER decrement_usage_count_on_ingredients_unlinked
+AFTER DELETE ON ingredients_recipes
+BEGIN
+   UPDATE ingredients
+   SET usage_count = usage_count - 1
+   WHERE id = OLD.ingredient_id;
+END;
+
+
+-- SELECT * FROM sqlite_master;
+SELECT * FROM sqlite_master WHERE type = 'trigger';
+
+
+
+-- Insertion d' identifiant a la table intermediaire (ingredients_recipes)
+-- INSERT INTO ingredients_recipes (recipe_id, ingredient_id, quantity, unit) VALUES
+-- (2, 7, 10, 'g');
+
+
+DELETE FROM ingredients_recipes WHERE recipe_id = 1 AND ingredient_id = 7;
 ```
 
 

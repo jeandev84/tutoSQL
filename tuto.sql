@@ -57,7 +57,8 @@ CREATE TABLE categories_recipes (
 -- Creation de table d' ingredients
 CREATE TABLE ingredients (
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-  name VARCHAR(150) NOT NULL
+  name VARCHAR(150) NOT NULL,
+  usage_count INTEGER DEFAULT 0 NOT NULL
 );
 
 
@@ -148,14 +149,27 @@ BEGIN
 END;
 
 
+-- DROP Trigger
+-- DROP TRIGGER decrement_usage_count_on_ingredients_unlinked
+
+
 CREATE TRIGGER decrement_usage_count_on_ingredients_unlinked
 AFTER INSERT ON ingredients_recipes
 BEGIN
    UPDATE ingredients
    SET usage_count = usage_count - 1
-   WHERE id = NEW.ingredient_id;
+   WHERE id = OLD.ingredient_id;
 END;
 
+
+
+CREATE TRIGGER decrement_usage_count_on_ingredients_unlinked
+AFTER DELETE ON ingredients_recipes
+BEGIN
+   UPDATE ingredients
+   SET usage_count = usage_count - 1
+   WHERE id = OLD.ingredient_id;
+END;
 
 
 -- SELECT * FROM sqlite_master;
