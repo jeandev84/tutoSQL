@@ -1461,3 +1461,110 @@ LIMIT 3 OFFSET 2;
 
 
 ```
+
+### REQUETES IMBRIQUES OU SOUS-REQUETES
+
+Les sous-requetes sont utilises pour obtenir un resultat 
+et utiliser ce resultat dans une autre requete
+
+```sql
+
+-- SOUS REQUETE
+
+/*
+SELECT *, (
+   SELECT COUNT(*) FROM ingredients_recipes WHERE recipe_id = r.id
+) AS count
+FROM recipes r;
+
+
+SELECT * 
+FROM (
+  SELECT * FROM recipes
+) r;
+
+
+SELECT r.title
+FROM (
+  SELECT * FROM recipes
+) r;
+
+SELECT r.count
+FROM (
+  SELECT COUNT(id) as count FROM recipes
+) r;
+
+*/
+
+
+-- On veut connaitre les "Ingredients" qui sont utiliser au niveau de "Dessert"
+-- 1. Quels sont les recettes qui sont dans "dessert"
+/*
+SELECT cr.recipe_id
+FROM categories c
+LEFT JOIN categories_recipes cr ON c.id = cr.category_id
+WHERE c.title = 'Dessert';
+*/
+-- 2. 
+/*
+SELECT *
+FROM recipes
+WHERE id IN (1, 2, 3);
+*/
+
+SELECT *
+FROM recipes
+WHERE id IN (
+    SELECT cr.recipe_id
+    FROM categories c
+    LEFT JOIN categories_recipes cr ON c.id = cr.category_id
+    WHERE c.title = 'Dessert'
+);
+
+
+SELECT i.*
+FROM ingredients_recipes ir
+LEFT JOIN ingredients i ON i.id = ir.ingredient_id
+WHERE ir.recipe_id IN (
+    SELECT cr.recipe_id
+    FROM categories c
+    LEFT JOIN categories_recipes cr ON c.id = cr.category_id
+    WHERE c.title = 'Dessert'
+);
+
+
+SELECT i.*
+FROM ingredients_recipes ir
+LEFT JOIN ingredients i ON i.id = ir.ingredient_id
+WHERE ir.recipe_id IN (
+    SELECT cr.recipe_id
+    FROM categories c
+    LEFT JOIN categories_recipes cr ON c.id = cr.category_id
+    WHERE c.title NOT IN ('Dessert', 'Gateau')
+);
+
+--- OPTIMISATION QUERY
+EXPLAIN QUERY PLAN SELECT i.*
+FROM ingredients_recipes ir
+LEFT JOIN ingredients i ON i.id = ir.ingredient_id
+WHERE ir.recipe_id IN (
+    SELECT cr.recipe_id
+    FROM categories c
+    LEFT JOIN categories_recipes cr ON c.id = cr.category_id
+    WHERE c.title NOT IN ('Dessert', 'Gateau')
+);
+
+
+--- REQUETTE CORRELATED LIST SUBQUERY
+--  Car la conditon depend d' une requette au dessus (ir)
+EXPLAIN QUERY PLAN SELECT i.*
+FROM ingredients_recipes ir
+LEFT JOIN ingredients i ON i.id = ir.ingredient_id
+WHERE ir.recipe_id IN (
+    SELECT cr.recipe_id
+    FROM categories c
+    LEFT JOIN categories_recipes cr ON c.id = cr.category_id
+    WHERE cr.recipe_id = ir.recipe_id
+);
+
+```
