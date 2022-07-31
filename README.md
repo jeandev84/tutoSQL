@@ -1813,5 +1813,63 @@ WHERE schema_name = 'tuto';
 
 ```
 
+### Sauvegarder des donnees temporelles (DATE, DATETIME, TIMESTAMP, YEAR)
+
+```sql
+
+-- Ajout de column a une table
+ALTER TABLE posts
+ADD published_at DATETIME;
+
+
+INSERT INTO posts (title, published) VALUES ('Hello world', '2020-02-13 12:00:00');
+
+
+SELECT title, YEAR(published_at) FROM posts;
+SELECT title, TIMEDIFF(NOW(), published_at) FROM posts;
+SELECT title, published_at FROM posts WHERE YEAR(published_at) = '2020';
+SELECT title, published_at FROM posts WHERE published_at <= NOW();
+SELECT title, published_at FROM posts WHERE published_at <= '2020';
+
+
+-- Ajout de column a une table
+ALTER TABLE posts
+ADD created_at TIMESTAMP;
+
+UPDATE posts SET created_at = '2020-01-01 12:00:00';
+
+SELECT * FROM posts;
+
+-- Changer le fuseau horaire de ma session SQL
+SET time_zone = '+03:00';
+
+SELECT * FROM posts;
+
+-- Connaitre le fuseau de notre server
+SELECT @@global.time_zone, @@session.time_zone;
+
+
+-- Connaitre la difference de decalage entre le UTC et notre localisation (Paris, Moscow)
+SELECT TIMEDIFF(NOW(), CONVERT_TZ(NOW(), @@session.time_zone, '+00:00'));
+
+
+-- Ajout de champs de date de creation
+/*
+ALTER TABLE posts
+ADD created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+*/
+
+ALTER TABLE posts
+ADD created_at DATETIME NOT NULL,
+ADD updated_at DATETIME NOT NULL;
+
+SELECT * FROM posts;
+
+
+UPDATE posts SET title = 'Hello' WHERE id = 1;
+```
+
+
 
 
