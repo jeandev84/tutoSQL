@@ -1692,3 +1692,15 @@ WHERE ingredients LIKE '%Farine%';
 DROP VIEW recipe_with_ingredients;
 
 ```
+
+
+### Les Triggers
+
+```sql
+Les triggers permettent de rajouter de la logique
+lorsqu ``'``` on a des operations qui sont effectuees sur ma base de donnees de voir combien de fois les ingredients sont utilises.
+
+Par example quand on fait CRUD (ajout, mise a jour, lire, supprimer)
+```
+
+

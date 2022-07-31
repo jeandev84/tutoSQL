@@ -124,48 +124,51 @@ INSERT INTO ingredients_recipes (recipe_id, ingredient_id, quantity, unit) VALUE
 (3, 1, 50, 'g');
 
 
-ALTER TABLE ingredients 
-ADD COLUMN usage_count INTEGER DEFAULT 0;
 
+-- NOTIONS DE VUES: CREATE VIEW
 
-SELECT * FROM ingredients;
-
--- Ce trigger sera appele 
--- apres insertion de donnees dans la table "ingredients_recipes"
--- dans le cas ou NEW.email != OLD.email
+-- Selectionner la liste des recettes
 /*
-CREATE TRIGGER update_usage_count_on_ingredients_linked
-AFTER INSERT ON ingredients_recipes
-WHERE NEW.email != OLD.email
+SELECT * 
+FROM recipes r
+LEFT JOIN ingredients_recipes ir ON ir.recipe_id = r.id
+LEFT JOIN ingredients i ON ir.ingredient_id = i.id
+;
+
+
+SELECT r.title, GROUP_CONCAT(i.name, ', ') as ingredients
+FROM recipes r
+LEFT JOIN ingredients_recipes ir ON ir.recipe_id = r.id
+LEFT JOIN ingredients i ON ir.ingredient_id = i.id
+GROUP BY r.title;
 */
 
-CREATE TRIGGER update_usage_count_on_ingredients_linked
-AFTER INSERT ON ingredients_recipes
-BEGIN 
-   UPDATE ingredients
-   SET usage_count = usage_count + 1
-   WHERE id = NEW.ingredient_id;
-END;
+
+--- Creer une vue (CREATE VIEW nameOfView as sqlQuery)
+CREATE VIEW recipe_with_ingredients
+AS 
+  SELECT r.title, GROUP_CONCAT(i.name, ', ') as ingredients
+  FROM recipes r
+  LEFT JOIN ingredients_recipes ir ON ir.recipe_id = r.id
+  LEFT JOIN ingredients i ON ir.ingredient_id = i.id
+  GROUP BY r.title;
 
 
-CREATE TRIGGER decrement_usage_count_on_ingredients_unlinked
-AFTER INSERT ON ingredients_recipes
-BEGIN
-   UPDATE ingredients
-   SET usage_count = usage_count - 1
-   WHERE id = NEW.ingredient_id;
-END;
+/*
+SELECT * 
+FROM recipe_with_ingredients;
+*/
 
-
-
--- SELECT * FROM sqlite_master;
-SELECT * FROM sqlite_master WHERE type = 'trigger';
+SELECT *
+FROM recipe_with_ingredients 
+WHERE ingredients LIKE '%Farine%';
 
 
 
--- Insertion d' identifiant a la table intermediaire (ingredients_recipes)
--- INSERT INTO ingredients_recipes (recipe_id, ingredient_id, quantity, unit) VALUES
--- (2, 7, 10, 'g');
+EXPLAIN QUERY PLAN SELECT *
+FROM recipe_with_ingredients 
+WHERE ingredients LIKE '%Farine%';
 
 
-DELETE FROM ingredients_recipes WHERE recipe_id = 1 AND ingredient_id = 7;
+-- Supprimer une vue (DROP VIEW nameOfView)
+DROP VIEW recipe_with_ingredients;
