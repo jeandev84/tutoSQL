@@ -153,7 +153,7 @@ DELETE FROM ingredients WHERE id = 3;
 SELECT * FROM ingredients_recipes;
 */
 
-
+/*
 UPDATE ingredients_recipes 
 SET quantity = 10
 WHERE recipe_id = 2 AND ingredient_id = 3;
@@ -163,3 +163,14 @@ SELECT r.title, ir.quantity, ir.unit, i.name AS ingredient
 FROM recipes r
 JOIN ingredients_recipes ir ON ir.recipe_id = r.id
 JOIN ingredients i ON ir.ingredient_id = i.id;
+*/
+
+
+
+SELECT * FROM recipes WHERE id = 2;
+
+
+SELECT * 
+FROM ingredients_recipes ir 
+JOIN ingredients ON ir.ingredient_id = i.id
+WHERE ir.recipe_id = 2;
