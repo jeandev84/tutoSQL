@@ -1870,6 +1870,60 @@ SELECT * FROM posts;
 UPDATE posts SET title = 'Hello' WHERE id = 1;
 ```
 
+### Types spaciaux (Geometric)
+
+```sql
+ALTER TABLE posts
+ADD location POINT;
 
 
+
+-- POINT(longitude latitude)
+INSERT INTO posts (title, location) VALUES 
+('Perpignan', ST_GeomFromText('POINT(2.895600 42.698601)')),
+('Montpellier', ST_GeomFromText('POINT(3.8977200 43.611900)')),
+('Paris', ST_GeomFromText('POINT(2.349014 48.864716)')),
+;
+
+-- Calcul de distance entre la ville de Monpellier et de Perpignan
+
+SELECT CONCAT(
+    ROUND(
+    ST_Distance_Sphere(
+    (SELECT location FROM posts WHERE title = 'Perpignan'),
+    (SELECT location FROM posts WHERE title = 'Montpellier')
+) / 1000), ' km') as distance; -- 129 km
+
+
+-- Calcul de distance entre la ville de  Perpignan et Paris
+
+SELECT CONCAT(
+    ROUND(
+    ST_Distance_Sphere(
+    (SELECT location FROM posts WHERE title = 'Perpignan'),
+    (SELECT location FROM posts WHERE title = 'Paris')
+) / 1000), ' km') as distance; -- 129 km
+
+
+SELECT title FROM posts WHERE ST_Distance_Sphere(
+    (SELECT location FROM posts WHERE title = 'Perpignan'),
+    location
+) < 200000; -- 200000 m = 200 km
+
+
+SELECT title FROM posts WHERE ST_Distance_Sphere(
+    (SELECT location FROM posts WHERE title = 'Perpignan'),
+    location
+) > 200000; -- 200000 m = 200 km
+
+```
+
+
+
+### Donnees JSON
+
+```sql
+
+
+```
 
