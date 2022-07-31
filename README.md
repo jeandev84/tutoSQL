@@ -1,6 +1,8 @@
 ## VSCode CTRL+SHIFT+Q (execute query)
 
-### INTRODUCTION A SQL ( https://sqlite.org/docs.html )
+### 1. SQLite
+### INTRODUCTION A SQL 
+https://sqlite.org/docs.html
 
 1. CREATE UNE TABLE
 ```sql 
@@ -1760,5 +1762,56 @@ SELECT * FROM sqlite_master WHERE type = 'trigger';
 
 DELETE FROM ingredients_recipes WHERE recipe_id = 1 AND ingredient_id = 7;
 ```
+
+
+### 2. MYSQL
+https://mariadb.com/downloads/community/
+
+
+### Creer une base de donnees
+
+```sql
+
+CREATE DATABASE tuto;
+DROP DATABASE tuto;
+
+```
+
+### Creer une table en MYSQL
+
+```sql
+
+-- UNSIGNED ()
+CREATE TABLE posts (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    content LONGTEXT,
+    online VARCHAR(255) DEFAUT 0
+);
+
+INSERT INTO posts (title, online) VALUES ('Hello', 0);
+-- INSERT INTO posts (title, online) VALUES ('Hello online', 1);
+INSERT INTO posts SET title = 'Hello online', online = 1;
+-- INSERT INTO posts SET title = 'Hello bad', online = 'azeaze';
+
+
+SELECT * FROM posts;
+
+
+UPDATE posts SET online = 1 WHERE id = 3;
+
+ALTER TABLE posts
+MODIFY online BOOLEAN NOT NULL DEFAULT 0;
+
+
+-- Voir l' encodage qui est utiliser globalement par notre server
+-- utf8mb3
+SHOW VARIABLES LIKE 'character_set_server'; 
+
+SELECT default_character_set_name FROM information_schema.SCHEMATA
+WHERE schema_name = 'tuto';
+
+```
+
 
 
