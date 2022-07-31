@@ -1387,5 +1387,77 @@ SELECT * FROM recipes;
 
 ```sql
 
+-- ORDER & LIMIT
+-- ORDER : permet d' organiser les enregistrements
+-- LIMIT : permet de limiter le nombre de resultat
+-- DESC  : Decroissant ( du plus grand au plus petit )
+-- ASC   : Croissant   ( du plus petit au plus grand )
+
+-- ORDRE PAR valeur numeric
+/*
+SELECT i.name, COUNT(ir.recipe_id) AS count
+FROM ingredients i
+LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+LEFT JOIN recipes r ON ir.recipe_id = r.id
+GROUP BY i.name
+ORDER BY count DESC;
+*/
+
+-- ORDRE PAR valeur alphabetic
+/*
+SELECT i.name, COUNT(ir.recipe_id) AS count
+FROM ingredients i
+LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+LEFT JOIN recipes r ON ir.recipe_id = r.id
+GROUP BY i.name
+ORDER BY i.name ASC;
+*/
+
+/*
+SELECT i.name, COUNT(ir.recipe_id) AS count
+FROM ingredients i
+LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+LEFT JOIN recipes r ON ir.recipe_id = r.id
+GROUP BY i.name
+ORDER BY count DESC, i.name ASC;
+*/
+
+-- LIMIT a un nombre definit
+SELECT i.name, COUNT(ir.recipe_id) AS count
+FROM ingredients i
+LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+LEFT JOIN recipes r ON ir.recipe_id = r.id
+GROUP BY i.name
+ORDER BY count DESC, i.name ASC
+LIMIT 3;
+
+
+-- LIMIT  : a nombre definit mais commencer par OFFSET
+-- OFFSET : signifitcommencant par (ca permet de bouger le curseur
+-- LIMIT 3 OFFSET 100
+-- LIMIT 10 OFFSET 6
+-- LIMIT 3 OFFSET 3
+
+/**
+Par example :
+On a le nombre total de recettes est de 250. SELECT COUNT(*) FROM recipes;
+On limte le resultat a 4 par parge. LIMIT 4
+En commencant par l'index 2. Numero de page OFFSET 200
+
+LIMIT 4 OFFSET 200 (200 < 250) retournera un resultat
+LIMIT 4 OFFSET 300 (300 > 250) Retourne aucun resultat
+
+LIMIT 3 OFFSET 2
+LIMIT 2, 3
+*/
+
+SELECT i.name, COUNT(ir.recipe_id) AS count
+FROM ingredients i
+LEFT JOIN ingredients_recipes ir ON ir.ingredient_id = i.id
+LEFT JOIN recipes r ON ir.recipe_id = r.id
+GROUP BY i.name
+ORDER BY count DESC, i.name ASC
+LIMIT 3 OFFSET 2; 
+
 
 ```
