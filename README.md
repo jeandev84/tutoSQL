@@ -961,8 +961,66 @@ WHERE c.title = 'Dessert';
 ```
 
 
-### SCHEMATISATION (SCHEMA DE TABLES)
+### SCHEMATISATION (MCD & MLD)
+- MCD : Modele Conceptual de Donnees
+- MLD : Modele Relationnel de Logic de Donnees
+- http://draw.io (https://app.diagrams.net/)
+
+- Links :
+http://perso.univ-lemans.fr/~cpiau/BD/SQL_PAGES/SQL0.html
 
 ```sql
+Une recette appartient a combien de categories au minimum : 0
+elle appartient a 0 categorie
+
+Une recette peut avoir une infinite de categories : n
+
+(0,n)
+
+User ----0,n---Cree---1,1---Recette
+Recette ----1,n---EstComposerDe---0,n---Ingredient
+Recette ----0,n-----Appartient----0,n----Categorie
+
+
+users
+ - id
+ - pseudo
+ - email
+
+
+recipes
+ - id
+ - title
+ - slug
+ - date
+ - duration
+ - user_id
+
+
+categories_recipes
+ - recipe_id
+ - category_id
+
+
+categories
+ - id
+ - title
+
+
+ingredients_recipes
+ - recipe_id
+ - ingredient_id
+ - quantity
+ - unit
+
+ingredient
+ - id
+ - title
+```
+
+### MLD (Pratique)
+
+```sql
+
 
 ```
